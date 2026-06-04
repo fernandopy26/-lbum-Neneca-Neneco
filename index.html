@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#5b1f31">
+  <title>Neneca & Neneco para sempre</title>
+
+  <link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%235b1f31"/%3E%3Cpath d="M32 52S10 38 10 22c0-8 6-13 13-13 4 0 7 2 9 5 2-3 5-5 9-5 7 0 13 5 13 13 0 16-22 30-22 30z" fill="%23d85773"/%3E%3C/svg%3E'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <audio id="musica" loop preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <header class="hero" id="inicio">
+    <div class="hero-photo" aria-hidden="true"></div>
+    <div class="hero-veil" aria-hidden="true"></div>
+
+    <nav class="top-nav" aria-label="Atalhos principais">
+      <a href="#album">Álbum</a>
+      <a href="#lembranca">Lembrança</a>
+    </nav>
+
+    <div class="hero-content reveal">
+      <p class="eyebrow">Desde 8 de fevereiro de 2025, às 18:46</p>
+      <h1>Neneca & Neneco</h1>
+      <p class="hero-text">Um cantinho para guardar o que a pressa do mundo nunca vai conseguir levar.</p>
+
+      <div class="counter-panel" aria-label="Tempo juntos">
+        <div class="counter-box">
+          <strong data-counter="dias">0</strong>
+          <span>dias</span>
+        </div>
+        <div class="counter-box">
+          <strong data-counter="horas">0</strong>
+          <span>horas</span>
+        </div>
+        <div class="counter-box">
+          <strong data-counter="minutos">0</strong>
+          <span>min</span>
+        </div>
+        <div class="counter-box">
+          <strong data-counter="segundos">0</strong>
+          <span>seg</span>
+        </div>
+      </div>
+
+      <p id="contador" class="counter-phrase"></p>
+
+      <div class="hero-actions">
+        <button class="button button-primary" id="musicButton" type="button">
+          <span aria-hidden="true">♪</span>
+          <span>Tocar música</span>
+        </button>
+        <a class="button button-soft" href="#album">
+          <span aria-hidden="true">♡</span>
+          <span>Abrir álbum</span>
+        </a>
+      </div>
+    </div>
+
+    <a class="scroll-cue" href="#carta" aria-label="Ir para a mensagem">⌄</a>
+  </header>
+
+  <main>
+    <section class="love-letter reveal" id="carta">
+      <div class="letter-paper">
+        <p class="script-line">Para a minha Neneca</p>
+        <h2>Todo mês, uma foto. Todos os dias, uma história.</h2>
+        <p>
+          Esse álbum vai crescendo junto com a gente: uma página nova aparece a cada mês,
+          esperando a foto que melhor conte como foi amar você naquele pedacinho do tempo.
+        </p>
+        <button class="secret-button" id="secretButton" type="button">
+          <span aria-hidden="true">♡</span>
+          <span>Clique aqui se você me ama</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="album-section" id="album">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Nossa foto do mês</p>
+        <h2>O livro dos nossos meses</h2>
+      </div>
+
+      <div class="book-controls reveal" aria-label="Controles do álbum">
+        <button class="icon-button" id="tocButton" type="button" aria-label="Voltar ao sumário" data-tooltip="Sumário">⌂</button>
+        <button class="icon-button" id="prevPage" type="button" aria-label="Página anterior" data-tooltip="Anterior">‹</button>
+        <p id="pageLabel" class="page-label" aria-live="polite">Sumário</p>
+        <button class="icon-button" id="nextPage" type="button" aria-label="Próxima página" data-tooltip="Próxima">›</button>
+      </div>
+
+      <div class="book-shell reveal">
+        <div class="book-spine" aria-hidden="true"></div>
+        <div id="bookStage" class="book-stage" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="print-section reveal" id="lembranca">
+      <div class="section-heading">
+        <p class="eyebrow">Para o mini porta-retrato</p>
+        <h2>Uma lembrança para virar papel foto</h2>
+      </div>
+
+      <div class="print-layout">
+        <div class="print-copy">
+          <p>
+            Um cartão 10x15 cm com espaço para a foto de vocês e para o QR code do site.
+            Quando estiver pronto, é só imprimir em papel foto e colocar no porta-retrato.
+          </p>
+          <button class="button button-primary" id="printButton" type="button">
+            <span aria-hidden="true">▣</span>
+            <span>Imprimir lembrança</span>
+          </button>
+        </div>
+
+        <article class="photo-card" id="photoCard" aria-label="Cartão para impressão">
+          <div class="photo-card-top">
+            <p>Neneca & Neneco</p>
+            <span>Desde 08.02.2025</span>
+          </div>
+
+          <div class="print-photo-frame">
+            <img id="printPhoto" src="imagens/cartao-foto.jpg" alt="Foto escolhida para o cartão">
+            <div class="print-empty">Foto</div>
+          </div>
+
+          <div class="photo-card-bottom">
+            <div>
+              <strong>Nosso álbum</strong>
+              <span>escaneie para abrir</span>
+            </div>
+            <div class="qr-frame">
+              <img id="qrImage" src="imagens/qr-code.png" alt="QR code do site">
+              <div class="qr-placeholder" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Fechar imagem">×</button>
+    <button class="modal-arrow modal-prev" id="modalPrev" type="button" aria-label="Foto anterior">‹</button>
+    <figure class="modal-figure">
+      <img id="imgModal" src="" alt="">
+      <figcaption id="modalCaption"></figcaption>
+    </figure>
+    <button class="modal-arrow modal-next" id="modalNext" type="button" aria-label="Próxima foto">›</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer>
+    Feito com amor para mi amore.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
