@@ -41,7 +41,6 @@ const modalNext = document.getElementById("modalNext");
 const imgModal = document.getElementById("imgModal");
 const modalCaption = document.getElementById("modalCaption");
 const toast = document.getElementById("toast");
-const livroMobileQuery = window.matchMedia("(max-width: 860px)");
 
 let tocando = false;
 let paginaAtual = 0;
@@ -50,7 +49,7 @@ let meses = [];
 let paginas = [];
 let fotosDisponiveis = [];
 let modalIndex = 0;
-let livroEmModoMobile = livroMobileQuery.matches;
+let toqueLivro = null;
 const statusImagens = new Map();
 
 function pad(numero) {
@@ -171,10 +170,6 @@ function atualizarFotosDisponiveis() {
       src: mes.caminho,
       legenda: formatarMes(mes)
     }));
-}
-
-function usandoLivroMobile() {
-  return livroMobileQuery.matches;
 }
 
 function criarIndiceMeses() {
@@ -320,94 +315,8 @@ function criarSpreadMes(mes) {
   return spread;
 }
 
-function criarSpreadMobile(indicePagina) {
-  const pagina = paginas[indicePagina];
-  const spread = document.createElement("article");
-  spread.className = "book-spread mobile-spread";
-
-  if (pagina.tipo === "sumario") {
-    const sumario = document.createElement("section");
-    sumario.className = "book-page mobile-summary-page";
-    sumario.innerHTML = `
-      <p class="eyebrow">Sumário</p>
-      <h3>O mapa do nosso álbum</h3>
-      <p class="toc-intro">Escolha um mês para abrir a página. O mês atual aparece sozinho quando o calendário vira.</p>
-    `;
-    sumario.appendChild(criarIndiceMeses());
-    spread.appendChild(sumario);
-    return spread;
-  }
-
-  const mes = pagina.mes;
-  const paginaMes = document.createElement("section");
-  paginaMes.className = "book-page mobile-month-page";
-
-  const cabecalho = document.createElement("div");
-  cabecalho.className = "mobile-month-head";
-  cabecalho.innerHTML = `
-    <p class="eyebrow">${mes.atual ? "Mês atual" : "Página do mês"}</p>
-    <h3>${formatarMes(mes)}</h3>
-    <p>${frasesMes[(mes.mes + mes.ano) % frasesMes.length]}</p>
-  `;
-
-  const moldura = document.createElement("figure");
-  moldura.className = "month-photo mobile-month-photo";
-
-  const imagem = document.createElement("img");
-  imagem.alt = `Foto de ${formatarMes(mes)}`;
-  imagem.loading = "lazy";
-
-  const placeholder = document.createElement("div");
-  placeholder.className = "photo-placeholder";
-  placeholder.innerHTML = `
-    <div>
-      <strong>${nomesMeses[mes.mes - 1]}</strong>
-      <span>${mes.arquivo}</span>
-    </div>
-  `;
-  placeholder.addEventListener("click", () => {
-    mostrarToast("Essa página já está pronta. Falta só escolher a foto do mês.");
-  });
-
-  const legenda = document.createElement("figcaption");
-  legenda.textContent = formatarMes(mes);
-
-  const meta = document.createElement("div");
-  meta.className = "month-meta";
-  meta.innerHTML = `
-    <span><strong>Arquivo</strong>${mes.arquivo}</span>
-    <span><strong>Status</strong><span data-photo-status>${statusImagens.get(mes.id) ? "foto escolhida" : "esperando vocês"}</span></span>
-  `;
-
-  imagem.addEventListener("load", () => {
-    moldura.classList.add("has-photo");
-    statusImagens.set(mes.id, true);
-    atualizarStatusDoSumario(mes.id, true);
-    atualizarFotosDisponiveis();
-    meta.querySelector("[data-photo-status]").textContent = "foto escolhida";
-  });
-
-  imagem.addEventListener("error", () => {
-    moldura.classList.add("is-empty");
-    imagem.removeAttribute("src");
-    statusImagens.set(mes.id, false);
-    atualizarStatusDoSumario(mes.id, false);
-    meta.querySelector("[data-photo-status]").textContent = "esperando vocês";
-  });
-
-  imagem.addEventListener("click", () => abrirModal(mes.caminho, formatarMes(mes)));
-  imagem.src = mes.caminho;
-
-  moldura.append(imagem, placeholder, legenda);
-  paginaMes.append(cabecalho, moldura, meta);
-  spread.appendChild(paginaMes);
-
-  return spread;
-}
-
 function criarSpread(indicePagina) {
   const pagina = paginas[indicePagina];
-  if (usandoLivroMobile()) return criarSpreadMobile(indicePagina);
   return pagina.tipo === "sumario" ? criarSpreadSumario() : criarSpreadMes(pagina.mes);
 }
 
@@ -428,23 +337,23 @@ function irParaPagina(proximaPagina) {
   const direcao = proximaPagina > paginaAtual ? "next" : "prev";
   const spreadAtual = bookStage.querySelector(".book-spread");
   const novoSpread = criarSpread(proximaPagina);
-  const folha = usandoLivroMobile() ? null : document.createElement("div");
-  const duracao = usandoLivroMobile() ? 560 : 800;
+  const folha = document.createElement("div");
+  const duracao = 800;
 
-  if (folha) folha.className = `page-sheet sheet-${direcao}`;
+  folha.className = `page-sheet sheet-${direcao}`;
   novoSpread.classList.add("spread-under", `under-${direcao}`);
   bookStage.appendChild(novoSpread);
-  if (folha) bookStage.appendChild(folha);
+  bookStage.appendChild(folha);
 
   requestAnimationFrame(() => {
     spreadAtual.classList.add("spread-turning", direcao === "next" ? "turn-page-next" : "turn-page-prev");
     novoSpread.classList.add("under-reveal");
-    if (folha) folha.classList.add("sheet-turning");
+    folha.classList.add("sheet-turning");
   });
 
   window.setTimeout(() => {
     spreadAtual.remove();
-    if (folha) folha.remove();
+    folha.remove();
     novoSpread.classList.remove("spread-under", `under-${direcao}`, "under-reveal");
     paginaAtual = proximaPagina;
     virandoPagina = false;
@@ -458,13 +367,45 @@ function renderizarLivro() {
   atualizarControles();
 }
 
-function reagirMudancaDeModoLivro() {
-  const mobileAtual = usandoLivroMobile();
-  if (mobileAtual === livroEmModoMobile) return;
+function iniciarToqueLivro(evento) {
+  const toque = evento.touches[0];
 
-  livroEmModoMobile = mobileAtual;
-  virandoPagina = false;
-  renderizarLivro();
+  if (!toque || modal.classList.contains("is-open")) return;
+
+  toqueLivro = {
+    x: toque.clientX,
+    y: toque.clientY,
+    tempo: Date.now()
+  };
+}
+
+function finalizarToqueLivro(evento) {
+  if (!toqueLivro || modal.classList.contains("is-open")) {
+    toqueLivro = null;
+    return;
+  }
+
+  const toque = evento.changedTouches[0];
+  if (!toque) {
+    toqueLivro = null;
+    return;
+  }
+
+  const deltaX = toque.clientX - toqueLivro.x;
+  const deltaY = toque.clientY - toqueLivro.y;
+  const tempo = Date.now() - toqueLivro.tempo;
+  toqueLivro = null;
+
+  const movimentoHorizontal = Math.abs(deltaX) > 52 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35;
+  const gestoRapido = tempo < 900;
+
+  if (!movimentoHorizontal || !gestoRapido) return;
+
+  irParaPagina(deltaX < 0 ? paginaAtual + 1 : paginaAtual - 1);
+}
+
+function cancelarToqueLivro() {
+  toqueLivro = null;
 }
 
 function abrirModal(src, legenda) {
@@ -566,6 +507,9 @@ nextPage.addEventListener("click", () => irParaPagina(paginaAtual + 1));
 modalClose.addEventListener("click", fecharModal);
 modalPrev.addEventListener("click", () => navegarModal(-1));
 modalNext.addEventListener("click", () => navegarModal(1));
+bookStage.addEventListener("touchstart", iniciarToqueLivro, { passive: true });
+bookStage.addEventListener("touchend", finalizarToqueLivro, { passive: true });
+bookStage.addEventListener("touchcancel", cancelarToqueLivro, { passive: true });
 
 modal.addEventListener("click", (evento) => {
   if (evento.target === modal) fecharModal();
@@ -582,12 +526,6 @@ document.addEventListener("keydown", (evento) => {
   if (evento.key === "ArrowLeft") irParaPagina(paginaAtual - 1);
   if (evento.key === "ArrowRight") irParaPagina(paginaAtual + 1);
 });
-
-if (livroMobileQuery.addEventListener) {
-  livroMobileQuery.addEventListener("change", reagirMudancaDeModoLivro);
-} else {
-  livroMobileQuery.addListener(reagirMudancaDeModoLivro);
-}
 
 prepararImagemOpcional(document.getElementById("printPhoto"), ".print-photo-frame");
 prepararImagemOpcional(document.getElementById("qrImage"), ".qr-frame");
