@@ -168,9 +168,9 @@ h2 {
 
 .counter-panel {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-  width: min(620px, 100%);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+  width: min(760px, 100%);
   margin: 2rem auto 0;
 }
 
@@ -197,10 +197,13 @@ h2 {
 .counter-box span {
   display: block;
   margin-top: 0.35rem;
+  overflow: hidden;
   color: rgba(255, 255, 255, 0.76);
   font-size: 0.78rem;
   font-weight: 800;
-  text-transform: uppercase;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
 }
 
 .counter-phrase {
@@ -1282,7 +1285,7 @@ footer {
   }
 
   .counter-panel {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
   }
 
   .icon-button:hover {
@@ -1493,11 +1496,15 @@ footer {
   }
 
   .counter-box {
-    padding: 0.85rem 0.55rem;
+    padding: 0.8rem 0.35rem;
   }
 
   .counter-box strong {
-    font-size: 1.55rem;
+    font-size: 1.35rem;
+  }
+
+  .counter-box span {
+    font-size: 0.58rem;
   }
 
   section {

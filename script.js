@@ -60,6 +60,10 @@ function formatarMes(mes) {
   return `${nomesMeses[mes.mes - 1]} / ${mes.ano}`;
 }
 
+function pluralizar(valor, singular, plural) {
+  return `${valor} ${valor === 1 ? singular : plural}`;
+}
+
 function gerarMeses() {
   const hoje = new Date();
   const cursor = new Date(albumInicio.getFullYear(), albumInicio.getMonth(), 1);
@@ -88,23 +92,37 @@ function gerarMeses() {
 
 function atualizarContador() {
   const agora = new Date();
-  const diferenca = Math.max(0, agora - dataInicio);
   const segundo = 1000;
   const minuto = segundo * 60;
   const hora = minuto * 60;
   const dia = hora * 24;
+  let anos = Math.max(0, agora.getFullYear() - dataInicio.getFullYear());
+  let ultimoAniversario = new Date(dataInicio);
+  ultimoAniversario.setFullYear(dataInicio.getFullYear() + anos);
+
+  if (agora < dataInicio) {
+    anos = 0;
+    ultimoAniversario = new Date(dataInicio);
+  } else if (ultimoAniversario > agora) {
+    anos -= 1;
+    ultimoAniversario = new Date(dataInicio);
+    ultimoAniversario.setFullYear(dataInicio.getFullYear() + anos);
+  }
+
+  const diferenca = Math.max(0, agora - ultimoAniversario);
 
   const dias = Math.floor(diferenca / dia);
   const horas = Math.floor(diferenca / hora) % 24;
   const minutos = Math.floor(diferenca / minuto) % 60;
   const segundos = Math.floor(diferenca / segundo) % 60;
 
+  document.querySelector('[data-counter="anos"]').textContent = anos;
   document.querySelector('[data-counter="dias"]').textContent = dias;
   document.querySelector('[data-counter="horas"]').textContent = pad(horas);
   document.querySelector('[data-counter="minutos"]').textContent = pad(minutos);
   document.querySelector('[data-counter="segundos"]').textContent = pad(segundos);
 
-  contador.textContent = `${dias} dias juntinhos, e esse número ainda está só começando.`;
+  contador.textContent = `${pluralizar(anos, "ano", "anos")}, ${pluralizar(dias, "dia", "dias")}, ${pluralizar(horas, "hora", "horas")}, ${pluralizar(minutos, "minuto", "minutos")} e ${pluralizar(segundos, "segundo", "segundos")} juntinhos.`;
 }
 
 function mostrarToast(mensagem) {
