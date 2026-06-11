@@ -1,5 +1,5 @@
 const dataInicio = new Date(2025, 1, 8, 18, 46, 0);
-const albumInicio = new Date(2025, 1, 1);
+const albumInicio = new Date(2025, 0, 1);
 
 const nomesMeses = [
   "Janeiro",
@@ -23,6 +23,15 @@ const frasesMes = [
   "Quando essa foto entrar aqui, esse mês ganha casa para sempre.",
   "O amor também mora nos detalhes que a gente escolhe lembrar."
 ];
+
+const extensoesFotosMes = ["jpg", "jpeg", "png", "webp"];
+const detalhesEspeciaisMes = {
+  "2025-01": {
+    titulo: "Primeira fotinha juntos",
+    etiqueta: "Comecinho nosso",
+    frase: "Antes do nosso dia oficial, janeiro já guardava uma lembrança que merece abrir o álbum."
+  }
+};
 
 const musica = document.getElementById("musica");
 const musicButton = document.getElementById("musicButton");
@@ -60,8 +69,49 @@ function formatarMes(mes) {
   return `${nomesMeses[mes.mes - 1]} / ${mes.ano}`;
 }
 
+function obterDetalhesMes(mes) {
+  return detalhesEspeciaisMes[mes.id] || {};
+}
+
+function obterTituloMes(mes) {
+  return obterDetalhesMes(mes).titulo || formatarMes(mes);
+}
+
+function obterEtiquetaMes(mes) {
+  return obterDetalhesMes(mes).etiqueta || (mes.atual ? "Mês atual" : "Página do mês");
+}
+
+function obterFraseMes(mes) {
+  return obterDetalhesMes(mes).frase || frasesMes[(mes.mes + mes.ano) % frasesMes.length];
+}
+
 function pluralizar(valor, singular, plural) {
   return `${valor} ${valor === 1 ? singular : plural}`;
+}
+
+function adicionarMeses(data, quantidadeMeses) {
+  const resultado = new Date(data);
+  const diaOriginal = resultado.getDate();
+  resultado.setMonth(resultado.getMonth() + quantidadeMeses);
+
+  if (resultado.getDate() !== diaOriginal) {
+    resultado.setDate(0);
+  }
+
+  return resultado;
+}
+
+function nomeArquivo(caminho) {
+  return caminho.split("/").pop();
+}
+
+function caminhosFotoMes(id) {
+  return extensoesFotosMes.map((extensao) => `imagens/meses/${id}.${extensao}`);
+}
+
+function definirFotoDoMes(mes, caminho) {
+  mes.caminho = caminho;
+  mes.arquivo = nomeArquivo(caminho);
 }
 
 function gerarMeses() {
@@ -74,13 +124,15 @@ function gerarMeses() {
     const ano = cursor.getFullYear();
     const mes = cursor.getMonth() + 1;
     const id = `${ano}-${pad(mes)}`;
+    const caminhos = caminhosFotoMes(id);
 
     lista.push({
       id,
       ano,
       mes,
-      arquivo: `${id}.jpg`,
-      caminho: `imagens/meses/${id}.jpg`,
+      arquivo: nomeArquivo(caminhos[0]),
+      caminho: caminhos[0],
+      caminhos,
       atual: ano === hoje.getFullYear() && mes === hoje.getMonth() + 1
     });
 
@@ -97,19 +149,32 @@ function atualizarContador() {
   const hora = minuto * 60;
   const dia = hora * 24;
   let anos = Math.max(0, agora.getFullYear() - dataInicio.getFullYear());
-  let ultimoAniversario = new Date(dataInicio);
-  ultimoAniversario.setFullYear(dataInicio.getFullYear() + anos);
+  let mesesCompletos = 0;
+  let marco = new Date(dataInicio);
+  marco.setFullYear(dataInicio.getFullYear() + anos);
 
   if (agora < dataInicio) {
     anos = 0;
-    ultimoAniversario = new Date(dataInicio);
-  } else if (ultimoAniversario > agora) {
+    marco = new Date(dataInicio);
+  } else if (marco > agora) {
     anos -= 1;
-    ultimoAniversario = new Date(dataInicio);
-    ultimoAniversario.setFullYear(dataInicio.getFullYear() + anos);
+    marco = new Date(dataInicio);
+    marco.setFullYear(dataInicio.getFullYear() + anos);
   }
 
-  const diferenca = Math.max(0, agora - ultimoAniversario);
+  if (agora >= dataInicio) {
+    mesesCompletos = (agora.getFullYear() - marco.getFullYear()) * 12 + agora.getMonth() - marco.getMonth();
+    let marcoMes = adicionarMeses(marco, mesesCompletos);
+
+    if (marcoMes > agora) {
+      mesesCompletos -= 1;
+      marcoMes = adicionarMeses(marco, mesesCompletos);
+    }
+
+    marco = marcoMes;
+  }
+
+  const diferenca = Math.max(0, agora - marco);
 
   const dias = Math.floor(diferenca / dia);
   const horas = Math.floor(diferenca / hora) % 24;
@@ -117,12 +182,13 @@ function atualizarContador() {
   const segundos = Math.floor(diferenca / segundo) % 60;
 
   document.querySelector('[data-counter="anos"]').textContent = anos;
+  document.querySelector('[data-counter="meses"]').textContent = mesesCompletos;
   document.querySelector('[data-counter="dias"]').textContent = dias;
   document.querySelector('[data-counter="horas"]').textContent = pad(horas);
   document.querySelector('[data-counter="minutos"]').textContent = pad(minutos);
   document.querySelector('[data-counter="segundos"]').textContent = pad(segundos);
 
-  contador.textContent = `${pluralizar(anos, "ano", "anos")}, ${pluralizar(dias, "dia", "dias")}, ${pluralizar(horas, "hora", "horas")}, ${pluralizar(minutos, "minuto", "minutos")} e ${pluralizar(segundos, "segundo", "segundos")} juntinhos.`;
+  contador.textContent = `${pluralizar(anos, "ano", "anos")}, ${pluralizar(mesesCompletos, "mês", "meses")}, ${pluralizar(dias, "dia", "dias")}, ${pluralizar(horas, "hora", "horas")}, ${pluralizar(minutos, "minuto", "minutos")} e ${pluralizar(segundos, "segundo", "segundos")} juntinhos.`;
 }
 
 function mostrarToast(mensagem) {
@@ -158,20 +224,28 @@ function prepararPaginas() {
   meses.forEach(verificarImagemDoMes);
 }
 
-function verificarImagemDoMes(mes) {
+function verificarImagemDoMes(mes, indiceCaminho = 0) {
   if (statusImagens.has(mes.id)) return;
+
+  const caminho = mes.caminhos[indiceCaminho];
+
+  if (!caminho) {
+    statusImagens.set(mes.id, false);
+    atualizarStatusDoSumario(mes.id, false);
+    return;
+  }
 
   const teste = new Image();
   teste.onload = () => {
+    definirFotoDoMes(mes, caminho);
     statusImagens.set(mes.id, true);
     atualizarStatusDoSumario(mes.id, true);
     atualizarFotosDisponiveis();
   };
   teste.onerror = () => {
-    statusImagens.set(mes.id, false);
-    atualizarStatusDoSumario(mes.id, false);
+    verificarImagemDoMes(mes, indiceCaminho + 1);
   };
-  teste.src = `${mes.caminho}?v=${Date.now()}`;
+  teste.src = `${caminho}?v=${Date.now()}`;
 }
 
 function atualizarStatusDoSumario(id, temFoto) {
@@ -186,8 +260,19 @@ function atualizarFotosDisponiveis() {
     .filter((mes) => statusImagens.get(mes.id))
     .map((mes) => ({
       src: mes.caminho,
-      legenda: formatarMes(mes)
+      legenda: obterTituloMes(mes)
     }));
+}
+
+function carregarImagemDoMes(imagem, mes, indiceCaminho = 0) {
+  const caminho = mes.caminhos[indiceCaminho];
+
+  if (!caminho) return false;
+
+  imagem.dataset.indiceCaminho = String(indiceCaminho);
+  imagem.dataset.caminho = caminho;
+  imagem.src = caminho;
+  return true;
 }
 
 function criarIndiceMeses() {
@@ -273,14 +358,14 @@ function criarSpreadMes(mes) {
   moldura.className = "month-photo";
 
   const imagem = document.createElement("img");
-  imagem.alt = `Foto de ${formatarMes(mes)}`;
+  imagem.alt = `Foto de ${obterTituloMes(mes)}`;
   imagem.loading = "lazy";
 
   const placeholder = document.createElement("div");
   placeholder.className = "photo-placeholder";
   placeholder.innerHTML = `
     <div>
-      <strong>${nomesMeses[mes.mes - 1]}</strong>
+      <strong>${obterTituloMes(mes)}</strong>
       <span>${mes.arquivo}</span>
     </div>
   `;
@@ -289,17 +374,25 @@ function criarSpreadMes(mes) {
   });
 
   const legenda = document.createElement("figcaption");
-  legenda.textContent = formatarMes(mes);
+  legenda.textContent = obterTituloMes(mes);
 
   imagem.addEventListener("load", () => {
+    definirFotoDoMes(mes, imagem.dataset.caminho || mes.caminho);
     moldura.classList.add("has-photo");
+    moldura.classList.remove("is-empty");
     statusImagens.set(mes.id, true);
     atualizarStatusDoSumario(mes.id, true);
     atualizarFotosDisponiveis();
+    placeholder.querySelector("span").textContent = mes.arquivo;
+    paginaTexto.querySelector("[data-photo-file]").textContent = mes.arquivo;
     paginaTexto.querySelector("[data-photo-status]").textContent = "foto escolhida";
   });
 
   imagem.addEventListener("error", () => {
+    const proximoIndice = Number(imagem.dataset.indiceCaminho || 0) + 1;
+
+    if (carregarImagemDoMes(imagem, mes, proximoIndice)) return;
+
     moldura.classList.add("is-empty");
     imagem.removeAttribute("src");
     statusImagens.set(mes.id, false);
@@ -307,7 +400,7 @@ function criarSpreadMes(mes) {
     paginaTexto.querySelector("[data-photo-status]").textContent = "esperando vocês";
   });
 
-  imagem.addEventListener("click", () => abrirModal(mes.caminho, formatarMes(mes)));
+  imagem.addEventListener("click", () => abrirModal(mes.caminho, obterTituloMes(mes)));
 
   moldura.append(imagem, placeholder, legenda);
   paginaFoto.appendChild(moldura);
@@ -316,18 +409,18 @@ function criarSpreadMes(mes) {
   paginaTexto.className = "book-page month-info";
   paginaTexto.innerHTML = `
     <div>
-      <p class="eyebrow">${mes.atual ? "Mês atual" : "Página do mês"}</p>
-      <h3>${formatarMes(mes)}</h3>
-      <p>${frasesMes[(mes.mes + mes.ano) % frasesMes.length]}</p>
+      <p class="eyebrow">${obterEtiquetaMes(mes)}</p>
+      <h3>${obterTituloMes(mes)}</h3>
+      <p>${obterFraseMes(mes)}</p>
       <div class="month-meta">
-        <span><strong>Arquivo</strong>${mes.arquivo}</span>
+        <span><strong>Arquivo</strong><span data-photo-file>${mes.arquivo}</span></span>
         <span><strong>Status</strong><span data-photo-status>${statusImagens.get(mes.id) ? "foto escolhida" : "esperando vocês"}</span></span>
       </div>
     </div>
     <p class="page-note">A página existe desde já. A lembrança entra quando a gente escolhe a foto.</p>
   `;
 
-  imagem.src = mes.caminho;
+  carregarImagemDoMes(imagem, mes);
   spread.append(paginaFoto, paginaTexto);
 
   return spread;
@@ -340,7 +433,7 @@ function criarSpread(indicePagina) {
 
 function atualizarControles() {
   const pagina = paginas[paginaAtual];
-  pageLabel.textContent = pagina.tipo === "sumario" ? "Sumário" : formatarMes(pagina.mes);
+  pageLabel.textContent = pagina.tipo === "sumario" ? "Sumário" : obterTituloMes(pagina.mes);
   prevPage.disabled = paginaAtual === 0;
   nextPage.disabled = paginaAtual === paginas.length - 1;
   tocButton.disabled = paginaAtual === 0;

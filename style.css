@@ -168,9 +168,9 @@ h2 {
 
 .counter-panel {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.65rem;
-  width: min(760px, 100%);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: min(860px, 100%);
   margin: 2rem auto 0;
 }
 
@@ -1285,7 +1285,7 @@ footer {
   }
 
   .counter-panel {
-    gap: 0.45rem;
+    gap: 0.35rem;
   }
 
   .icon-button:hover {
@@ -1496,15 +1496,15 @@ footer {
   }
 
   .counter-box {
-    padding: 0.8rem 0.35rem;
+    padding: 0.75rem 0.25rem;
   }
 
   .counter-box strong {
-    font-size: 1.35rem;
+    font-size: 1.16rem;
   }
 
   .counter-box span {
-    font-size: 0.58rem;
+    font-size: 0.52rem;
   }
 
   section {
