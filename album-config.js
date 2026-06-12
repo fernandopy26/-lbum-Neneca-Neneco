@@ -37,10 +37,10 @@ window.albumConfig = {
     },
 
     "2025-02": {
-      titulo: "Fevereiro / 2025",
-      etiqueta: "Nosso começo",
-      texto: "O mês em que a nossa história ganhou data, promessa e um lugar só dela no tempo.",
-      legenda: "Fevereiro / 2025"
+      titulo: "Primeira foto namorando",
+      etiqueta: "Agora oficialmente nós",
+      texto: "A primeira fotinha depois que a gente começou a namorar de verdade. Fevereiro guardou o friozinho bom do começo, a alegria de chamar de nosso e a certeza de que aquela data tinha virado parte da nossa história.",
+      legenda: "Primeira foto depois do sim"
     }
   }
 };
