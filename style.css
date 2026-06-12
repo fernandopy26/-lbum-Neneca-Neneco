@@ -1649,6 +1649,7 @@ footer {
   body {
     width: 5.8cm;
     height: 8.5cm;
+    min-width: 0;
     margin: 0;
     background: white;
     overflow: hidden;
