@@ -907,34 +907,6 @@ section {
   pointer-events: none;
 }
 
-.photo-card-top {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.12rem;
-}
-
-.photo-card-top p,
-.photo-card-top span {
-  margin: 0;
-}
-
-.photo-card-top p {
-  color: white;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: clamp(1.05rem, 4vw, 1.35rem);
-  font-weight: 800;
-  line-height: 1.05;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
-}
-
-.photo-card-top span {
-  color: rgba(255, 255, 255, 0.84);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-}
-
 .print-photo-frame {
   position: absolute;
   inset: 0;
@@ -984,7 +956,7 @@ section {
   display: grid;
   width: min(76%, 12rem);
   justify-items: center;
-  gap: 0.48rem;
+  gap: 0.42rem;
   padding: 0.68rem 0.72rem 0.72rem;
   border: 1px solid rgba(255, 255, 255, 0.92);
   border-radius: 8px;
@@ -995,14 +967,16 @@ section {
 }
 
 .photo-card-bottom > div:first-child {
-  order: 2;
+  order: 1;
 }
 
 .photo-card-bottom strong {
   display: block;
   color: var(--wine);
-  font-size: 0.86rem;
+  font-size: 0.76rem;
+  font-weight: 900;
   line-height: 1.08;
+  text-wrap: balance;
 }
 
 .photo-card-bottom span {
@@ -1016,7 +990,7 @@ section {
 .qr-frame {
   position: relative;
   display: grid;
-  order: 1;
+  order: 2;
   width: min(54vw, 7.8rem);
   max-width: 7.8rem;
   aspect-ratio: 1;
@@ -1713,20 +1687,12 @@ footer {
     page-break-inside: avoid;
   }
 
-  .photo-card-top p {
-    font-size: 0.52cm;
-  }
-
-  .photo-card-top span {
-    font-size: 0.24cm;
-  }
-
   .photo-card-bottom {
     top: 50%;
     left: 50%;
-    width: 3.42cm;
-    gap: 0.1cm;
-    padding: 0.18cm 0.2cm 0.2cm;
+    width: 3.72cm;
+    gap: 0.12cm;
+    padding: 0.2cm 0.2cm 0.22cm;
     border-radius: 0.14cm;
     background: white;
     box-shadow: none;
@@ -1734,7 +1700,8 @@ footer {
   }
 
   .photo-card-bottom strong {
-    font-size: 0.22cm;
+    font-size: 0.18cm;
+    line-height: 1.12;
   }
 
   .photo-card-bottom span {
