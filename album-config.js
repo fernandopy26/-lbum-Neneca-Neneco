@@ -40,7 +40,7 @@ window.albumConfig = {
       titulo: "Primeira foto namorando",
       etiqueta: "Agora oficialmente nós",
       texto: "A primeira fotinha depois que a gente começou a namorar de verdade. Fevereiro guardou o friozinho bom do começo, a alegria de chamar de nosso e a certeza de que aquela data tinha virado parte da nossa história.",
-      legenda: "Primeira foto depois do sim"
+      legenda: "Primeira foto depois da conversa com o papis"
     }
   }
 };
