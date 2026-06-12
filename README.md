@@ -1,13 +1,13 @@
 # Album Neneca & Neneco
 
-Site-presente com contador do tempo juntos, album mensal em formato de livro e cartao 10x15 cm para imprimir com QR code.
+Site-presente com contador do tempo juntos, album mensal em formato de livro e cartao 5,8 x 8,5 cm para mini porta-retrato com QR code.
 
 ## Como adicionar fotos
 
 - Fotos do album: coloque em `imagens/meses/AAAA-MM.extensao`, por exemplo `imagens/meses/2026-06.jpg`.
 - O nome sempre usa ano com 4 digitos e mes com 2 digitos: janeiro de 2025 fica `2025-01`, fevereiro de 2025 fica `2025-02`.
 - Extensoes aceitas no album: `.jpg`, `.jpeg`, `.png` e `.webp`.
-- Foto do cartao impresso: `imagens/cartao-foto.jpg`, `.jpeg`, `.png` ou `.webp`.
+- Foto do cartao impresso: usa `imagens/capa.jpeg` por padrao. Se quiser outra, coloque `imagens/cartao-foto.jpg`, `.jpeg`, `.png` ou `.webp`.
 - QR code do cartao impresso: `imagens/qr-code.png`, `.jpg`, `.jpeg` ou `.webp`.
 - O cartao de impressao esta no tamanho 5,8 x 8,5 cm.
 
