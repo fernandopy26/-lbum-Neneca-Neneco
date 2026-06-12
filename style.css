@@ -956,12 +956,11 @@ section {
   display: grid;
   width: min(76%, 12rem);
   justify-items: center;
-  gap: 0.42rem;
-  padding: 0.68rem 0.72rem 0.72rem;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.3);
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   text-align: center;
   transform: translate(-50%, -50%);
 }
@@ -972,10 +971,11 @@ section {
 
 .photo-card-bottom strong {
   display: block;
-  color: var(--wine);
-  font-size: 0.76rem;
+  color: white;
+  font-size: 0.78rem;
   font-weight: 900;
   line-height: 1.08;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.72);
   text-wrap: balance;
 }
 
@@ -995,10 +995,11 @@ section {
   max-width: 7.8rem;
   aspect-ratio: 1;
   place-items: center;
-  padding: 0.28rem;
+  padding: 0.46rem;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
   background: white;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
 
@@ -1691,17 +1692,19 @@ footer {
     top: 50%;
     left: 50%;
     width: 3.72cm;
-    gap: 0.12cm;
-    padding: 0.2cm 0.2cm 0.22cm;
-    border-radius: 0.14cm;
-    background: white;
+    gap: 0.1cm;
+    padding: 0;
+    border: 0;
+    background: transparent;
     box-shadow: none;
     transform: translate(-50%, -50%);
   }
 
   .photo-card-bottom strong {
-    font-size: 0.18cm;
+    color: white;
+    font-size: 0.2cm;
     line-height: 1.12;
+    text-shadow: 0 0.04cm 0.16cm rgba(0, 0, 0, 0.74);
   }
 
   .photo-card-bottom span {
@@ -1710,8 +1713,8 @@ footer {
   }
 
   .qr-frame {
-    width: 2.52cm;
-    padding: 0.08cm;
+    width: 2.72cm;
+    padding: 0.12cm;
     border-radius: 0.08cm;
     box-shadow: none;
   }
