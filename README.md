@@ -10,4 +10,19 @@ Site-presente com contador do tempo juntos, album mensal em formato de livro e c
 - Foto do cartao impresso: `imagens/cartao-foto.jpg`.
 - QR code do cartao impresso: `imagens/qr-code.png`.
 
+## Como mudar textos das paginas do album
+
+Edite o arquivo `album-config.js`.
+
+Para cada mes, use o id `AAAA-MM` dentro de `meses`:
+
+```js
+"2025-02": {
+  titulo: "Nome da pagina",
+  etiqueta: "Texto pequeno acima do titulo",
+  texto: "Descricao que aparece na pagina ao lado da foto.",
+  legenda: "Legenda embaixo da foto"
+}
+```
+
 O site cria uma pagina nova automaticamente quando entra um novo mes.

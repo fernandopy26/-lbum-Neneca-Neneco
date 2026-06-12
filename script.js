@@ -16,7 +16,8 @@ const nomesMeses = [
   "Dezembro"
 ];
 
-const frasesMes = [
+const configAlbum = window.albumConfig || {};
+const frasesMes = configAlbum.frasesPadrao || [
   "Um mês para guardar no bolso do coração.",
   "A foto escolhida vai contar o que as palavras deixaram brilhando.",
   "Mais uma página para provar que o tempo fica bonito quando passa com você.",
@@ -25,12 +26,19 @@ const frasesMes = [
 ];
 
 const extensoesFotosMes = ["jpg", "jpeg", "png", "webp"];
-const detalhesEspeciaisMes = {
-  "2025-01": {
-    titulo: "Primeira fotinha juntos",
-    etiqueta: "Comecinho nosso",
-    frase: "Antes do nosso dia oficial, janeiro já guardava uma lembrança que merece abrir o álbum."
-  }
+const detalhesEspeciaisMes = configAlbum.meses || {};
+const textosSumario = {
+  etiqueta: "Sumário",
+  titulo: "O mapa do nosso álbum",
+  descricao: "{total} páginas mensais desde o começo da nossa história.",
+  rodape: "Cada mês tem um lugar marcado para a lembrança que vai morar ali.",
+  indiceEtiqueta: "Meses guardados",
+  indiceDescricao: "O calendário vira, e uma página nova aparece para esperar a próxima foto.",
+  ...(configAlbum.sumario || {})
+};
+const paginaPadrao = {
+  nota: "A página existe desde já. A lembrança entra quando a gente escolhe a foto.",
+  ...(configAlbum.paginaPadrao || {})
 };
 
 const musica = document.getElementById("musica");
@@ -82,7 +90,22 @@ function obterEtiquetaMes(mes) {
 }
 
 function obterFraseMes(mes) {
-  return obterDetalhesMes(mes).frase || frasesMes[(mes.mes + mes.ano) % frasesMes.length];
+  const detalhes = obterDetalhesMes(mes);
+  return detalhes.texto || detalhes.frase || frasesMes[(mes.mes + mes.ano) % frasesMes.length];
+}
+
+function obterLegendaMes(mes) {
+  return obterDetalhesMes(mes).legenda || obterTituloMes(mes);
+}
+
+function obterNotaMes(mes) {
+  return obterDetalhesMes(mes).nota || paginaPadrao.nota;
+}
+
+function formatarModelo(texto, dados) {
+  return Object.entries(dados).reduce((resultado, [chave, valor]) => {
+    return resultado.split(`{${chave}}`).join(String(valor));
+  }, texto);
 }
 
 function pluralizar(valor, singular, plural) {
@@ -260,7 +283,7 @@ function atualizarFotosDisponiveis() {
     .filter((mes) => statusImagens.get(mes.id))
     .map((mes) => ({
       src: mes.caminho,
-      legenda: obterTituloMes(mes)
+      legenda: obterLegendaMes(mes)
     }));
 }
 
@@ -323,11 +346,11 @@ function criarSpreadSumario() {
   capa.innerHTML = `
     <span class="book-mark" aria-hidden="true"></span>
     <div>
-      <p class="eyebrow">Sumário</p>
-      <h3>O mapa do nosso álbum</h3>
-      <p>${meses.length} páginas mensais desde o começo da nossa história.</p>
+      <p class="eyebrow">${textosSumario.etiqueta}</p>
+      <h3>${textosSumario.titulo}</h3>
+      <p>${formatarModelo(textosSumario.descricao, { total: meses.length })}</p>
     </div>
-    <p>Cada mês tem um lugar marcado para a lembrança que vai morar ali.</p>
+    <p>${textosSumario.rodape}</p>
   `;
 
   const indice = document.createElement("section");
@@ -335,8 +358,8 @@ function criarSpreadSumario() {
 
   const titulo = document.createElement("div");
   titulo.innerHTML = `
-    <p class="eyebrow">Meses guardados</p>
-    <p class="toc-intro">O calendário vira, e uma página nova aparece para esperar a próxima foto.</p>
+    <p class="eyebrow">${textosSumario.indiceEtiqueta}</p>
+    <p class="toc-intro">${textosSumario.indiceDescricao}</p>
   `;
 
   const anos = criarIndiceMeses();
@@ -358,7 +381,7 @@ function criarSpreadMes(mes) {
   moldura.className = "month-photo";
 
   const imagem = document.createElement("img");
-  imagem.alt = `Foto de ${obterTituloMes(mes)}`;
+  imagem.alt = `Foto de ${obterLegendaMes(mes)}`;
   imagem.loading = "lazy";
 
   const placeholder = document.createElement("div");
@@ -374,7 +397,7 @@ function criarSpreadMes(mes) {
   });
 
   const legenda = document.createElement("figcaption");
-  legenda.textContent = obterTituloMes(mes);
+  legenda.textContent = obterLegendaMes(mes);
 
   imagem.addEventListener("load", () => {
     definirFotoDoMes(mes, imagem.dataset.caminho || mes.caminho);
@@ -400,7 +423,7 @@ function criarSpreadMes(mes) {
     paginaTexto.querySelector("[data-photo-status]").textContent = "esperando vocês";
   });
 
-  imagem.addEventListener("click", () => abrirModal(mes.caminho, obterTituloMes(mes)));
+  imagem.addEventListener("click", () => abrirModal(mes.caminho, obterLegendaMes(mes)));
 
   moldura.append(imagem, placeholder, legenda);
   paginaFoto.appendChild(moldura);
@@ -417,7 +440,7 @@ function criarSpreadMes(mes) {
         <span><strong>Status</strong><span data-photo-status>${statusImagens.get(mes.id) ? "foto escolhida" : "esperando vocês"}</span></span>
       </div>
     </div>
-    <p class="page-note">A página existe desde já. A lembrança entra quando a gente escolhe a foto.</p>
+    <p class="page-note">${obterNotaMes(mes)}</p>
   `;
 
   carregarImagemDoMes(imagem, mes);
