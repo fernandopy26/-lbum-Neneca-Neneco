@@ -120,7 +120,7 @@
       <div class="print-layout">
         <div class="print-copy">
           <p>
-            Um cartão 10x15 cm com espaço para a nossa foto e para o QR code do site.
+            Um cartão 5,8 x 8,5 cm com a nossa foto ao fundo e o QR code em destaque para abrir o site.
           </p>
           <button class="button button-primary" id="printButton" type="button">
             <span aria-hidden="true">▣</span>
@@ -129,14 +129,19 @@
         </div>
 
         <article class="photo-card" id="photoCard" aria-label="Cartão para impressão">
+          <div class="print-photo-frame">
+            <img
+              id="printPhoto"
+              src="imagens/cartao-foto.jpg"
+              data-srcs="imagens/cartao-foto.jpg,imagens/cartao-foto.jpeg,imagens/cartao-foto.png,imagens/cartao-foto.webp"
+              alt="Foto escolhida para o cartão"
+            >
+            <div class="print-empty">Foto</div>
+          </div>
+
           <div class="photo-card-top">
             <p>Neneca & Neneco</p>
             <span>Desde 08.02.2025</span>
-          </div>
-
-          <div class="print-photo-frame">
-            <img id="printPhoto" src="imagens/cartao-foto.jpg" alt="Foto escolhida para o cartão">
-            <div class="print-empty">Foto</div>
           </div>
 
           <div class="photo-card-bottom">
@@ -145,7 +150,12 @@
               <span>escaneie para abrir</span>
             </div>
             <div class="qr-frame">
-              <img id="qrImage" src="imagens/qr-code.png" alt="QR code do site">
+              <img
+                id="qrImage"
+                src="imagens/qr-code.png"
+                data-srcs="imagens/qr-code.png,imagens/qr-code.jpg,imagens/qr-code.jpeg,imagens/qr-code.webp"
+                alt="QR code do site"
+              >
               <div class="qr-placeholder" aria-hidden="true">
                 <span></span><span></span><span></span><span></span><span></span>
                 <span></span><span></span><span></span><span></span><span></span>

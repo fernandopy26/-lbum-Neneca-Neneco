@@ -861,7 +861,7 @@ section {
 
 .print-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 430px);
+  grid-template-columns: minmax(0, 0.9fr) minmax(240px, 340px);
   gap: 2rem;
   align-items: center;
   width: min(1040px, 100%);
@@ -879,25 +879,38 @@ section {
 }
 
 .photo-card {
-  width: min(100%, 400px);
-  aspect-ratio: 2 / 3;
+  position: relative;
+  display: flex;
+  width: min(100%, 300px);
+  aspect-ratio: 58 / 85;
+  flex-direction: column;
+  justify-content: space-between;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.9rem;
   border: 1px solid rgba(91, 31, 49, 0.16);
   border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(216, 87, 115, 0.12), transparent 34%),
-    linear-gradient(135deg, rgba(30, 123, 121, 0.13), transparent 45%),
-    var(--paper);
+  background: var(--wine);
   box-shadow: var(--shadow);
+  isolation: isolate;
+  overflow: hidden;
 }
 
-.photo-card-top,
-.photo-card-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+.photo-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(18, 10, 17, 0.34), rgba(18, 10, 17, 0.04) 38%, rgba(18, 10, 17, 0.72)),
+    linear-gradient(135deg, rgba(91, 31, 49, 0.2), rgba(30, 123, 121, 0.12));
+  pointer-events: none;
+}
+
+.photo-card-top {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.12rem;
 }
 
 .photo-card-top p,
@@ -906,28 +919,31 @@ section {
 }
 
 .photo-card-top p {
-  color: var(--wine);
+  color: white;
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.3rem;
+  font-size: clamp(1.05rem, 4vw, 1.35rem);
   font-weight: 800;
+  line-height: 1.05;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
 }
 
-.photo-card-top span,
-.photo-card-bottom span {
-  color: var(--muted);
-  font-size: 0.78rem;
+.photo-card-top span {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.72rem;
   font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
 .print-photo-frame {
-  position: relative;
-  display: grid;
-  height: 66%;
-  margin: 0.9rem 0;
-  place-items: center;
-  border: 1px solid rgba(91, 31, 49, 0.16);
-  border-radius: 8px;
-  background: white;
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  border: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(216, 87, 115, 0.18), rgba(30, 123, 121, 0.16)),
+    var(--paper);
   overflow: hidden;
 }
 
@@ -945,12 +961,11 @@ section {
 .print-empty {
   position: absolute;
   display: grid;
-  width: calc(100% - 1.4rem);
-  height: calc(100% - 1.4rem);
+  inset: 0.8rem;
   place-items: center;
-  border: 1px dashed rgba(91, 31, 49, 0.25);
+  border: 1px dashed rgba(255, 255, 255, 0.42);
   border-radius: 6px;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.82);
   font-weight: 800;
 }
 
@@ -960,25 +975,49 @@ section {
 
 .photo-card-bottom strong {
   display: block;
-  color: var(--wine);
+  color: white;
+  font-size: 0.92rem;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.36);
+}
+
+.photo-card-bottom {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.photo-card-bottom span {
+  display: block;
+  margin-top: 0.18rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.34);
 }
 
 .qr-frame {
   position: relative;
   display: grid;
-  width: 5.4rem;
+  width: min(42vw, 8.2rem);
+  max-width: 8.2rem;
   aspect-ratio: 1;
   place-items: center;
-  border: 1px solid rgba(91, 31, 49, 0.16);
-  border-radius: 6px;
+  padding: 0.38rem;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
   background: white;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
 
 .qr-frame img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   opacity: 0;
 }
 
@@ -992,7 +1031,7 @@ section {
 
 .qr-placeholder {
   display: grid;
-  width: 4.1rem;
+  width: 100%;
   aspect-ratio: 1;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.16rem;
@@ -1595,7 +1634,7 @@ footer {
 
 @media print {
   @page {
-    size: 10cm 15cm;
+    size: 5.8cm 8.5cm;
     margin: 0;
   }
 
@@ -1608,8 +1647,8 @@ footer {
 
   html,
   body {
-    width: 10cm;
-    height: 15cm;
+    width: 5.8cm;
+    height: 8.5cm;
     margin: 0;
     background: white;
     overflow: hidden;
@@ -1637,8 +1676,8 @@ footer {
   .print-section,
   .print-layout {
     display: block;
-    width: 10cm;
-    height: 15cm;
+    width: 5.8cm;
+    height: 8.5cm;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -1647,14 +1686,42 @@ footer {
   }
 
   .photo-card {
-    width: 10cm;
-    height: 14.98cm;
+    width: 5.8cm;
+    height: 8.5cm;
     margin: 0;
     border: 0;
     border-radius: 0;
+    padding: 0.38cm;
     break-inside: avoid;
     box-shadow: none;
     page-break-after: avoid;
     page-break-inside: avoid;
+  }
+
+  .photo-card-top p {
+    font-size: 0.52cm;
+  }
+
+  .photo-card-top span {
+    font-size: 0.24cm;
+  }
+
+  .photo-card-bottom {
+    gap: 0.22cm;
+  }
+
+  .photo-card-bottom strong {
+    font-size: 0.28cm;
+  }
+
+  .photo-card-bottom span {
+    font-size: 0.2cm;
+  }
+
+  .qr-frame {
+    width: 2.35cm;
+    padding: 0.12cm;
+    border-radius: 0.12cm;
+    box-shadow: none;
   }
 }

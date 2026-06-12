@@ -579,15 +579,45 @@ function navegarModal(passo) {
 
 function prepararImagemOpcional(imagem, classeContainer) {
   const container = imagem.closest(classeContainer);
+  const fontes = (imagem.dataset.srcs || imagem.getAttribute("src") || "")
+    .split(",")
+    .map((fonte) => fonte.trim())
+    .filter(Boolean);
+
+  function tentarFonte(indice) {
+    const fonte = fontes[indice];
+
+    if (!fonte) {
+      imagem.removeAttribute("src");
+      return false;
+    }
+
+    imagem.dataset.srcIndex = String(indice);
+    imagem.src = fonte;
+    return true;
+  }
+
+  imagem.dataset.srcIndex = "0";
 
   imagem.addEventListener("load", () => {
     container.classList.add("has-image");
   });
 
   imagem.addEventListener("error", () => {
-    imagem.removeAttribute("src");
     container.classList.remove("has-image");
+    const proximoIndice = Number(imagem.dataset.srcIndex || 0) + 1;
+
+    if (!tentarFonte(proximoIndice)) {
+      imagem.removeAttribute("src");
+    }
   });
+
+  if (imagem.complete && imagem.naturalWidth === 0) {
+    if (!tentarFonte(1)) {
+      imagem.removeAttribute("src");
+    }
+    return;
+  }
 
   if (imagem.complete && imagem.naturalWidth > 0) {
     container.classList.add("has-image");
